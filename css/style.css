@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
 :root {
   --x: 0;
   --y: 0;
@@ -23,7 +28,10 @@
 
 body {
   margin: 0;
+  height: 100vh;
+  height: 100svh;
   min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -31,6 +39,8 @@ body {
   font-family: "Courier New", monospace;
   color: var(--text);
   background: var(--bg);
+  padding: clamp(18px, 4vw, 42px) 0;
+  line-height: 1.5;
 }
 
 a {
@@ -41,6 +51,7 @@ a {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  pointer-events: none;
   background:
     radial-gradient(
       circle at calc(50% + var(--x) * -38px) calc(50% + var(--y) * -38px),
@@ -120,17 +131,19 @@ a {
 .wrap {
   position: relative;
   z-index: 2;
+  width: min(92vw, 720px);
   transform-style: preserve-3d;
   transform:
     rotateX(calc(var(--y) * -7deg))
     rotateY(calc(var(--x) * 9deg))
     translate3d(calc(var(--x) * 15px), calc(var(--y) * 15px), 0)
     scale(var(--site-scale));
-  transition: transform 0.08s linear;
+  transition: transform 0.12s ease-out;
+  will-change: transform;
 }
 
 .card {
-  width: min(92vw, 720px);
+  width: 100%;
   border: 1px solid rgba(143, 223, 255, 0.18);
   border-radius: 8px;
   background: linear-gradient(180deg, var(--panel), rgba(5, 10, 17, 0.9));
@@ -182,20 +195,20 @@ a {
 }
 
 .content {
-  padding: 38px;
+  padding: clamp(26px, 5vw, 38px);
 }
 
 .hero {
   display: flex;
-  gap: 26px;
+  gap: clamp(20px, 4vw, 26px);
   align-items: center;
   margin-bottom: 32px;
 }
 
 .avatar {
   position: relative;
-  width: 138px;
-  height: 138px;
+  width: clamp(112px, 20vw, 138px);
+  height: clamp(112px, 20vw, 138px);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -208,10 +221,16 @@ a {
     inset 0 0 26px rgba(143, 223, 255, 0.18),
     0 0 30px rgba(143, 223, 255, 0.26);
   color: var(--babyblue);
-  font-size: 74px;
+  font-size: clamp(58px, 11vw, 74px);
   font-weight: 900;
   text-shadow: 0 0 20px rgba(143, 223, 255, 0.75);
   transform: translateZ(48px);
+}
+
+.avatar.has-image {
+  background-position: center;
+  background-size: cover;
+  color: transparent;
 }
 
 .avatar::before {
@@ -294,7 +313,13 @@ h1 {
   background: rgba(255, 255, 255, 0.035);
   color: var(--text);
   text-decoration: none;
-  transition: 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    background-color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .icon-card {
@@ -318,11 +343,20 @@ h1 {
 }
 
 .icon-card:hover,
-.link:hover {
+.link:hover,
+.icon-card:focus-visible,
+.link:focus-visible {
   border-color: rgba(143, 223, 255, 0.55);
   box-shadow: 0 0 20px rgba(143, 223, 255, 0.18);
   transform: translateY(-2px);
   color: var(--babyblue-3);
+  outline: none;
+}
+
+.icon-card:active,
+.link:active {
+  transform: translateY(0);
+  background: rgba(143, 223, 255, 0.08);
 }
 
 .status {
@@ -343,11 +377,13 @@ h1 {
   display: flex;
   align-items: center;
   gap: 18px;
+  min-width: 0;
 }
 
 .app {
   width: 82px;
   height: 82px;
+  flex: 0 0 82px;
   border-radius: 12px;
   background:
     radial-gradient(circle at 30% 20%, rgba(188, 236, 255, 0.24), transparent 28%),
@@ -359,6 +395,22 @@ h1 {
   font-size: 28px;
   font-weight: 900;
   box-shadow: 0 0 20px rgba(143, 223, 255, 0.12);
+}
+
+.playing > div:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.playing strong,
+.playing .muted,
+.playing .status-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
 }
 
 .muted {
@@ -404,16 +456,22 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .link small {
   color: var(--muted);
   margin-left: auto;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footer {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   color: rgba(119, 149, 168, 0.8);
   border-top: 1px solid rgba(143, 223, 255, 0.1);
@@ -425,34 +483,165 @@ h1 {
 
 @media (max-width: 630px) {
   :root {
-    --site-scale: 1;
+    --site-scale: 0.96;
   }
 
   body {
-    overflow-y: auto;
-    padding: 28px 0;
+    display: grid;
+    padding: 10px 12px;
   }
 
-  .hero {
-    flex-direction: column;
-    text-align: center;
+  .wrap {
+    width: 100%;
+  }
+
+  .card {
+    box-shadow:
+      0 0 26px rgba(98, 207, 255, 0.15),
+      0 24px 62px rgba(0, 0, 0, 0.72);
+  }
+
+  .topbar {
+    height: 34px;
+    padding: 0 14px;
+    font-size: 12px;
   }
 
   .content {
-    padding: 26px;
+    padding: 16px;
+  }
+
+  .hero {
+    gap: 14px;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+
+  h1 {
+    font-size: 32px;
   }
 
   .avatar {
-    width: 132px;
-    height: 132px;
-    font-size: 70px;
+    width: 92px;
+    height: 92px;
+    font-size: 50px;
+  }
+
+  .avatar::before {
+    inset: -5px;
+  }
+
+  .avatar::after {
+    right: 6px;
+    bottom: 12px;
+    width: 15px;
+    height: 15px;
+    border-width: 3px;
+  }
+
+  .handle {
+    margin-bottom: 7px;
+  }
+
+  .bio {
+    line-height: 1.45;
+  }
+
+  .line-title {
+    gap: 9px;
+    margin: 15px 0 8px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+  }
+
+  .icons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .icon-card {
+    height: 42px;
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  .status {
+    padding: 12px;
+  }
+
+  .status-title {
+    margin-bottom: 8px;
   }
 
   .playing {
+    gap: 12px;
     align-items: flex-start;
+  }
+
+  .app {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+
+  .links {
+    gap: 8px;
+  }
+
+  .link {
+    min-height: 44px;
+    padding: 10px 14px;
   }
 
   .link small {
     display: none;
+  }
+
+  .footer {
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 9px 16px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 390px) {
+  :root {
+    --site-scale: 0.92;
+  }
+
+  body {
+    padding: 8px;
+  }
+
+  .content {
+    padding: 14px;
+  }
+
+  .app {
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
+  }
+}
+
+@media (max-height: 700px) {
+  :root {
+    --site-scale: 0.88;
+  }
+}
+
+@media (max-height: 600px) {
+  :root {
+    --site-scale: 0.78;
+  }
+}
+
+@media (max-width: 630px), (pointer: coarse) {
+  .icon-card:hover,
+  .link:hover {
+    transform: none;
   }
 }
