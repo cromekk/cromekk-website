@@ -8,7 +8,140 @@
   <meta name="description" content="Personal website for cromekk, 21 year old software developer." />
   <meta name="theme-color" content="#050505" />
 
-  <link rel="stylesheet" href="./css/style.css?v=20260628-2" />
+  <link rel="stylesheet" href="./css/style.css?v=20260628-3" />
+
+  <!-- Kept inline so the boot screen cannot load without its matching styles. -->
+  <style>
+    .loader {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: #050505;
+      animation: loader-exit 650ms cubic-bezier(0.76, 0, 0.24, 1) 2.65s forwards;
+    }
+
+    .terminal {
+      width: min(620px, 100%);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      color: #bcbcbc;
+      background: #080808;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.7);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      animation: terminal-in 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .terminal-bar {
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      color: #777;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+    }
+
+    .terminal-bar > span:last-child { justify-self: end; }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dots i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #464646;
+    }
+
+    .terminal-body {
+      min-height: 290px;
+      padding: clamp(22px, 5vw, 38px);
+      font-size: clamp(0.7rem, 1.7vw, 0.82rem);
+      letter-spacing: 0.02em;
+    }
+
+    .terminal-line {
+      margin: 0 0 15px;
+      opacity: 0;
+      transform: translateY(4px);
+      animation: terminal-line-in 100ms steps(1, end) forwards;
+    }
+
+    .terminal-line:nth-child(1) { animation-delay: 350ms; }
+    .terminal-line:nth-child(2) { animation-delay: 800ms; }
+    .terminal-line:nth-child(3) { animation-delay: 1.15s; }
+    .terminal-line:nth-child(4) { animation-delay: 1.5s; }
+    .terminal-line:nth-child(5) { animation-delay: 1.9s; }
+    .prompt { margin-right: 10px; color: #fff; }
+    .ok { margin-right: 10px; color: #73d38b; }
+
+    .cursor {
+      margin-left: 3px;
+      color: #fff;
+      animation: cursor-blink 500ms steps(1, end) infinite;
+    }
+
+    .boot-track {
+      height: 2px;
+      margin-top: 30px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: show-boot 1ms 1.95s forwards;
+    }
+
+    .boot-track span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #f5f5f5;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: terminal-load 550ms cubic-bezier(0.65, 0, 0.35, 1) 2s forwards;
+    }
+
+    .boot-status {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      color: #666;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      opacity: 0;
+      animation: show-boot 1ms 2.5s forwards;
+    }
+
+    .boot-status span:last-child { color: #f5f5f5; }
+
+    @keyframes terminal-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes terminal-line-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cursor-blink { 50% { opacity: 0; } }
+    @keyframes show-boot { to { opacity: 1; } }
+    @keyframes terminal-load { to { transform: scaleX(1); } }
+
+    @keyframes loader-exit {
+      to { visibility: hidden; transform: translateY(-100%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader { display: none; }
+    }
+  </style>
 </head>
 
 <body>
